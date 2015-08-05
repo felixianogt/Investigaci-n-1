@@ -21,19 +21,19 @@ public class modulo implements generador{
 
     @Override
     public boolean guardarRnd(int x) {
-        
+        int cont=0;
         SinglyLinkedList lista1; 
         lista1 = new SinglyLinkedList();
         
         
         
         boolean contiene=lista1.isEmpty();
-        while(contiene==true){
+        //while(contiene==true){
            
         for(int i=0;i<x;i++){
             Random rand = new Random(); 
             int value; 
-            value = rand.nextInt(x);
+            value = rand.nextInt(10);
             String valor= Integer.toString(value);
             lista1.addFirst(valor);
         try{
@@ -57,7 +57,9 @@ public class modulo implements generador{
             }
 
             }
-        }
+        cont++;
+        System.out.println(cont);
+        //}
             return false;
     }
 

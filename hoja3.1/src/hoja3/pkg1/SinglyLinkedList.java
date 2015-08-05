@@ -9,7 +9,7 @@ package hoja3.pkg1;
  *
  * @author carlosmartinez
  */
-public abstract class  SinglyLinkedList<E> extends AbstractList<E>
+public class  SinglyLinkedList<E> extends AbstractList<E>
 {
 
    protected int count; // list size
