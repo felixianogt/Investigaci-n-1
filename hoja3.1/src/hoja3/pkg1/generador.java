@@ -10,10 +10,12 @@ package hoja3.pkg1;
  * @author carlosmartinez
  */
 public interface generador{
-    public boolean guardarRnd(int x);
+    public boolean guardarRnd(SinglyLinkedList lista1, int x);
     public void leerArchivo1();
-    public boolean Ordenar(String lista);
-    public boolean guardarOrd(int x);
+    public void selectionSort(SinglyLinkedList lista1);
+    //public void bubbleSort(SinglyLinkedList lista1);
+    
+    public boolean guardarOrd(SinglyLinkedList lista1);
     public void leerArchivo2();
     
     

@@ -16,10 +16,18 @@ public class driver{
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        SinglyLinkedList lista1; 
+        lista1 = new SinglyLinkedList();
+        
         int a=Integer.parseInt(JOptionPane.showInputDialog("ingrese cantidad"));
         modulo prueba=new modulo();
-        prueba.guardarRnd(a);
+        prueba.guardarRnd(lista1,a);
         prueba.leerArchivo1();
+        
+        prueba.selectionSort(lista1);
+        //prueba.bubbleSort(lista1);
+        prueba.guardarOrd(lista1);
+        prueba.leerArchivo2();
         
         
         
