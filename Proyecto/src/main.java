@@ -327,7 +327,7 @@ public class main extends javax.swing.JFrame {
         if(jButton2.isSelected()){
             enviarDatos(ENCENDERL);
             try{
-                jTextField3.setText(leerDatos());
+                jTextField3.setText(leerDatos(input.read()));
             }catch(Exception e){
                 mostrarError("ERROR");
             }
