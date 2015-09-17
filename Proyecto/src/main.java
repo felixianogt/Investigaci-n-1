@@ -78,12 +78,14 @@ public class main extends javax.swing.JFrame {
     
     
     
-    private String leerDatos(){
+    private String leerDatos(int entrada){
         String data=null;
         try{
+            
+        
             while(input.available()>0) {
-                System.out.print((char)(input.read()));
-                data= Integer.toString(input.read());
+                System.out.print((char)(entrada));
+                data= Integer.toString(entrada);
        
            }
         }catch(Exception e){
@@ -98,6 +100,8 @@ public class main extends javax.swing.JFrame {
     public void mostrarError(String mensaje){
         JOptionPane.showMessageDialog(this, mensaje,"ERROR",JOptionPane.ERROR_MESSAGE);
     }
+    
+    
     
     
     
@@ -308,7 +312,7 @@ public class main extends javax.swing.JFrame {
         if(jButton1.isSelected()){
             enviarDatos(ENCENDERHT);
             try{
-                jTextField1.setText(leerDatos());
+                jTextField1.setText(leerDatos(input.read()));
             }catch(Exception e){
                 mostrarError("ERROR");
             }
