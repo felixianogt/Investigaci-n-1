@@ -28,7 +28,8 @@ class WordTypeCounter {
 			//  3 Splay Tree
 			//  4 Hash Table
 			//  5 TreeMap (de java collection framework)
-			int implementacion = Integer.parseInt(JOptionPane.showInputDialog(null,"Ingrese numero del 1 al 5"));
+                        Object[] obj = {"1","2","3","4","5"};
+			int implementacion = Integer.parseInt((String)JOptionPane.showInputDialog(null,"Selecciona un tipo de implementación:\n1. Simple Set\n2. Red Black Tree\n3. Splay Tree\n4. Hash Table\n5. TreeMap", "Almacenamiento de datos",JOptionPane.QUESTION_MESSAGE,null,obj, obj[0]));
 			
 			BufferedReader wordreader;
 			BufferedReader textreader;

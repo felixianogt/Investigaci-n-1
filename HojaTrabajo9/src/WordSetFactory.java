@@ -20,7 +20,10 @@ class WordSetFactory {
                             
 	    if (tipo == 1)
 		    return new SimpleSet();
-		else
+            else{
+                if (tipo==2)
+                    return new RedBlackTree();
+            }
                                   
             
 

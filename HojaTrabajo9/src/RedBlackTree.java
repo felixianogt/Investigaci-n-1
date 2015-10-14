@@ -1,270 +1,262 @@
-    // RedBlackTree class
-    //
-    // CONSTRUCTION: with a negative infinity sentinel
-    //
-    // ******************PUBLIC OPERATIONS*********************
-    // void insert( x )       --> Insert x
-    // void remove( x )       --> Remove x (unimplemented)
-    // Comparable find( x )   --> Return item that matches x
-    // Comparable findMin( )  --> Return smallest item
-    // Comparable findMax( )  --> Return largest item
-    // boolean isEmpty( )     --> Return true if empty; else false
-    // void makeEmpty( )      --> Remove all items
-    // void printTree( )      --> Print tree in sorted order
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author juankboix1309
+ */
+import java.awt.Color;
+import java.util.Comparator;
+
+public class RedBlackTree implements WordSet{
+    
+    private Comparator comparator;
+    protected RedBlackTreeNode root = null;
+
+   
+    public RedBlackTree() {
+    }
+
+
 
     /**
-     * Implements a red-black tree.
-     * Note that all "matching" is based on the compareTo method.
-     * @author Mark Allen Weiss
+     * Adds a single data item to the tree. If there is already an item in the
+     * tree that compares equal to the item being inserted, it is "overwritten"
+     * by the new item. Overrides BinarySearchTree.add because the tree needs to
+     * be adjusted after insertion.
+     * @param data
      */
-public class RedBlackTree implements WordSet
-    {
-        /**
-         * Construct the tree.
-         * @param negInf a value less than or equal to all others.
-         */
-        public RedBlackTree( Comparable negInf )
-        {
-            header      = new RedBlackNode( negInf );
-            header.left = header.right = nullNode;
+     
+    public void add(Word data) {
+        if (root == null) {
+            root = new RedBlackTreeNode(data);
         }
-
-
-        /**
-         * Insert into the tree. Does nothing if item already present.
-         * @param item the item to insert.
-         */
-        public void insert( Comparable item )
-        {
-            current = parent = grand = header;
-            nullNode.element = item;
-
-            while( current.element.compareTo( item ) != 0 )
-            {
-                great = grand; grand = parent; parent = current;
-                current = item.compareTo( current.element ) < 0 ?
-                             current.left : current.right;
-
-                    // Check if two red children; fix if so
-                if( current.left.color == RED && current.right.color == RED )
-                     handleReorient( item );
-            }
-
-                // Insertion fails if already present
-            if( current != nullNode )
+        RedBlackTreeNode n = root;
+        while (true) {
+            int comparisonResult = compare((Word)data, (Word)n.getData());
+            if (comparisonResult == 0) {
+                n.setData(data);
                 return;
-            current = new RedBlackNode( item, nullNode, nullNode );
-
-                // Attach to parent
-            if( item.compareTo( parent.element ) < 0 )
-                parent.left = current;
-            else
-                parent.right = current;
-            handleReorient( item );
-        }
-
-        /**
-         * Remove from the tree.
-         * Not implemented in this version.
-         * @param x the item to remove.
-         */
-        public void remove( Comparable x )
-        {
-            System.out.println( "Remove is not implemented" );
-        }
-
-        /**
-         * Find the smallest item  the tree.
-         * @return the smallest item or null if empty.
-         */
-        public Comparable findMin( )
-        {
-            if( isEmpty( ) )
-                return null;
-
-            RedBlackNode itr = header.right;
-
-            while( itr.left != nullNode )
-                itr = itr.left;
-
-            return itr.element;
-        }
-
-        /**
-         * Find the largest item in the tree.
-         * @return the largest item or null if empty.
-         */
-        public Comparable findMax( )
-        {
-            if( isEmpty( ) )
-                return null;
-
-            RedBlackNode itr = header.right;
-
-            while( itr.right != nullNode )
-                itr = itr.right;
-
-            return itr.element;
-        }
-
-        /**
-         * Find an item in the tree.
-         * @param x the item to search for.
-         * @return the matching item or null if not found.
-         */
-        public Comparable find( Comparable x )
-        {
-            nullNode.element = x;
-            current = header.right;
-
-            for( ; ; )
-            {
-                if( x.compareTo( current.element ) < 0 )
-                    current = current.left;
-                else if( x.compareTo( current.element ) > 0 ) 
-                    current = current.right;
-                else if( current != nullNode )
-                    return current.element;
-                else
-                    return null;
+            } else if (comparisonResult < 0) {
+                if (n.getLeft() == null) {
+                    n.setLeft( new RedBlackTreeNode(data));
+                    adjustAfterInsertion( n.getLeft());
+                    break;
+                }
+                n = n.getLeft();
+            } else { // comparisonResult > 0
+                if (n.getRight() == null) {
+                    n.setRight( new RedBlackTreeNode(data));
+                    adjustAfterInsertion( n.getRight());
+                    break;
+                }
+                n = n.getRight();
             }
         }
-
-        /**
-         * Make the tree logically empty.
-         */
-        public void makeEmpty( )
-        {
-            header.right = nullNode;
-        }
-
-        /**
-         * Test if the tree is logically empty.
-         * @return true if empty, false otherwise.
-         */
-        public boolean isEmpty( )
-        {
-            return header.right == nullNode;
-        }
-
-        /**
-         * Print the tree contents in sorted order.
-         */
-        public void printTree( )
-        {
-            if( isEmpty( ) )
-                System.out.println( "Empty tree" );
-            else
-                printTree( header.right );
-        }
-
-        /**
-         * Internal method to print a subtree in sorted order.
-         * @param t the node that roots the tree.
-         */
-        private void printTree( RedBlackNode t )
-        {
-            if( t != nullNode )
-            {
-                printTree( t.left );
-                System.out.println( t.element );
-                printTree( t.right );
-            }
-        }
-
-        /**
-         * Internal routine that is called during an insertion
-         * if a node has two red children. Performs flip and rotations.
-         * @param item the item being inserted.
-         */
-        private void handleReorient( Comparable item )
-        {
-                // Do the color flip
-            current.color = RED;
-            current.left.color = BLACK;
-            current.right.color = BLACK;
-
-            if( parent.color == RED )   // Have to rotate
-            {
-                grand.color = RED;
-                if( ( item.compareTo( grand.element ) < 0 ) !=
-                    ( item.compareTo( parent.element ) < 0 ) )
-                    parent = rotate( item, grand );  // Start dbl rotate
-                current = rotate( item, great );
-                current.color = BLACK;
-            }
-            header.right.color = BLACK; // Make root black
-        }
-
-        /**
-         * Internal routine that performs a single or double rotation.
-         * Because the result is attached to the parent, there are four cases.
-         * Called by handleReorient.
-         * @param item the item in handleReorient.
-         * @param parent the parent of the root of the rotated subtree.
-         * @return the root of the rotated subtree.
-         */
-        private RedBlackNode rotate( Comparable item, RedBlackNode parent )
-        {
-            if( item.compareTo( parent.element ) < 0 )
-                return parent.left = item.compareTo( parent.left.element ) < 0 ?
-                    rotateWithLeftChild( parent.left )  :  // LL
-                    rotateWithRightChild( parent.left ) ;  // LR
-            else
-                return parent.right = item.compareTo( parent.right.element ) < 0 ?
-                    rotateWithLeftChild( parent.right ) :  // RL
-                    rotateWithRightChild( parent.right );  // RR
-        }
-
-        /**
-         * Rotate binary tree node with left child.
-         */
-        static RedBlackNode rotateWithLeftChild( RedBlackNode k2 )
-        {
-            RedBlackNode k1 = k2.left;
-            k2.left = k1.right;
-            k1.right = k2;
-            return k1;
-        }
-
-        /**
-         * Rotate binary tree node with right child.
-         */
-        static RedBlackNode rotateWithRightChild( RedBlackNode k1 )
-        {
-            RedBlackNode k2 = k1.right;
-            k1.right = k2.left;
-            k2.left = k1;
-            return k2;
-        }
-
-        private RedBlackNode header;
-        private static RedBlackNode nullNode;
-            static         // Static initializer for nullNode
-            {
-                nullNode = new RedBlackNode( null );
-                nullNode.left = nullNode.right = nullNode;
-            }
-
-        static final int BLACK = 1;    // Black must be 1
-        static final int RED   = 0;
-
-            // Used in insert routine and its helpers
-        private static RedBlackNode current;
-        private static RedBlackNode parent;
-        private static RedBlackNode grand;
-        private static RedBlackNode great;
-
-    @Override
-    public void add(Word wordObject) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public Word get(Word word) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    private void adjustAfterInsertion(RedBlackTreeNode n) {
+        // Step 1: color the node red
+        setColor(n, Color.red);
+
+        // Step 2: Correct double red problems, if they exist
+        if (n != null && n != root && isRed(parentOf(n))) {
+
+            // Step 2a (simplest): Recolor, and move up to see if more work
+            // needed
+            if (isRed(siblingOf(parentOf(n)))) {
+                setColor(parentOf(n), Color.black);
+                setColor(siblingOf(parentOf(n)), Color.black);
+                setColor(grandparentOf(n), Color.red);
+                adjustAfterInsertion(grandparentOf(n));
+            }
+
+            // Step 2b: Restructure for a parent who is the left child of the
+            // grandparent. This will require a single right rotation if n is
+            // also
+            // a left child, or a left-right rotation otherwise.
+            else if (parentOf(n) == leftOf(grandparentOf(n))) {
+                if (n == rightOf(parentOf(n))) {
+                    rotateLeft(n = parentOf(n));
+                }
+                setColor(parentOf(n), Color.black);
+                setColor(grandparentOf(n), Color.red);
+                rotateRight(grandparentOf(n));
+            }
+
+            // Step 2c: Restructure for a parent who is the right child of the
+            // grandparent. This will require a single left rotation if n is
+            // also
+            // a right child, or a right-left rotation otherwise.
+            else if (parentOf(n) == rightOf(grandparentOf(n))) {
+                if (n == leftOf(parentOf(n))) {
+                    rotateRight(n = parentOf(n));
+                }
+                setColor(parentOf(n), Color.black);
+                setColor(grandparentOf(n), Color.red);
+                rotateLeft(grandparentOf(n));
+            }
+        }
+
+        // Step 3: Color the root black
+        setColor(root, Color.black);
     }
 
-
-            
+    private Color colorOf(RedBlackTreeNode n) {
+        return n == null ? Color.black : n.color;
     }
+
+    private boolean isRed(RedBlackTreeNode n) {
+        return n != null && colorOf(n) == Color.red;
+    }
+
+    private boolean isBlack(RedBlackTreeNode n) {
+        return n == null || colorOf(n) == Color.black;
+    }
+
+    private void setColor(RedBlackTreeNode n, Color c) {
+        if (n != null)
+            n.color = c;
+    }
+
+    private RedBlackTreeNode parentOf(RedBlackTreeNode n) {
+        return n == null ? null :  n.getParent();
+    }
+
+    private RedBlackTreeNode grandparentOf(RedBlackTreeNode n) {
+        return (n == null || n.getParent() == null) ? null : n
+                .getParent().getParent();
+    }
+
+    private RedBlackTreeNode siblingOf(RedBlackTreeNode n) {
+        return (n == null || n.getParent() == null) ? null : (n == n
+                .getParent().getLeft()) ? n.getParent().getRight()
+                :  n.getParent().getLeft();
+    }
+
+    private RedBlackTreeNode leftOf(RedBlackTreeNode n) {
+        return n == null ? null :  n.getLeft();
+    }
+
+    private RedBlackTreeNode rightOf(RedBlackTreeNode n) {
+        return n == null ? null :  n.getRight();
+    }
+    
+    protected int compare(Word x, Word y) {
+        if (comparator == null) {
+            return ((Comparable)x).compareTo(y);
+        } else {
+            return comparator.compare(x, y);
+        }
+    }
+
+    // Methods relating to nodes, not part of public interface. NO ES NECESARIO
+
+    /**
+     * Returns the root of the tree.
+     */
+    protected RedBlackTreeNode getRoot() {
+        return root;
+    }
+
+    /**
+     * Makes the given node the new root of the tree.TAMPOCO ES NESESARIO
+     * 
+     */
+    protected void setRoot(RedBlackTreeNode node) {
+        if (node != null) {
+            node.removeFromParent();
+        }
+        root = node;
+    }
+
+    /**
+     * Rotates left around the given node.
+     */
+    protected void rotateLeft(RedBlackTreeNode n) {
+        if (n.getRight() == null) {
+            return;
+        }
+        RedBlackTreeNode oldRight = n.getRight();
+        n.setRight(oldRight.getLeft());
+        if (n.getParent() == null) {
+            root = oldRight;
+        } else if (n.getParent().getLeft() == n) {
+            n.getParent().setLeft(oldRight);
+        } else {
+            n.getParent().setRight(oldRight);
+        }
+        oldRight.setLeft(n);
+    }
+
+    /**
+     * Rotates right around the given node.
+     */
+    protected void rotateRight(RedBlackTreeNode n) {
+        if (n.getLeft() == null) {
+            return;
+        }
+        RedBlackTreeNode oldLeft = n.getLeft();
+        n.setLeft(oldLeft.getRight());
+        if (n.getParent() == null) {
+            root = oldLeft;
+        } else if (n.getParent().getLeft() == n) {
+            n.getParent().setLeft(oldLeft);
+        } else {
+            n.getParent().setRight(oldLeft);
+        }
+        oldLeft.setRight(n);
+    }
+
+    /**
+     * Returns the rightmost node in the left subtree. este si
+     */
+    protected RedBlackTreeNode predecessor(RedBlackTreeNode node) {
+        RedBlackTreeNode n = node.getLeft();
+        if (n != null) {
+            while (n.getRight() != null) {
+                n = n.getRight();
+            }
+        }
+        return n;
+    }
+
+    /**
+     * A special helper method that returns the node containing
+     * an object that compares equal to the given object.  This
+     * is used in both contains and remove.
+     *
+     */
+    
+    public Word get(Word data)
+    {
+        for (RedBlackTreeNode n = root; n != null;) {
+            int comparisonResult = compare(data, n.getData());
+            if (comparisonResult == 0) {
+                return n.getData();
+            } else if (comparisonResult < 0) {
+                n = n.getLeft();
+            } else {
+                n = n.getRight();
+            }
+        }
+        return null;
+        
+    }
+    protected RedBlackTreeNode nodeContaining(Word data) {
+        for (RedBlackTreeNode n = root; n != null;) {
+            int comparisonResult = compare(data, n.getData());
+            if (comparisonResult == 0) {
+                return n;
+            } else if (comparisonResult < 0) {
+                n = n.getLeft();
+            } else {
+                n = n.getRight();
+            }
+        }
+        return null;
+    }
+}
