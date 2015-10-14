@@ -24,6 +24,12 @@ class WordSetFactory {
                 if (tipo==2)
                     return new RedBlackTree();
             }
+            if(tipo==4)
+                return new hashTable();
+            if(tipo==5)
+                return new treeMap();
+
+                    
                                   
             
 
