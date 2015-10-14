@@ -128,6 +128,9 @@ class WordTypeCounter {
 				System.out.println(adjectives + " adjetivos");
 				System.out.println(adverbs + " adverbios");
 				System.out.println(gerunds + " gerundios");
+                                
+                                int palabras=verbs+nouns+adjectives+adverbs+gerunds;
+                                System.out.println("Total de palabras analizadas: "+palabras);
 				
 			}
 			else

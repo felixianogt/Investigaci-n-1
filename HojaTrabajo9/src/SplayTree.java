@@ -14,11 +14,7 @@
 // ******************ERRORS********************************
 // Exceptions are thrown by insert and remove if warranted
 
-/**
- * Implements a top-down splay tree.
- * Note that all "matching" is based on the compareTo method.
- * @author Mark Allen Weiss
- */
+
 public class SplayTree implements WordSet 
 {
     /**
